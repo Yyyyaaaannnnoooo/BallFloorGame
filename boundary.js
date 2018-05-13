@@ -6,26 +6,27 @@
 
 // A boundary is a simple rectangle with x,y,width,and height
 class Boundary {
-  constructor(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-
+  constructor(x, y, w) {
+    this.x = x || 0;
+    this.y = y || 0;
+    this.w = w || random(30, 400);
+    this.h = 20;
+    this.initialPos = scaleToWorld(width + this.w / 2);
     this.fd = new box2d.b2FixtureDef();
     this.fd.density = 1.0;
     this.fd.friction = 0.5;
     this.fd.restitution = 0.2;
-
+    
     this.bd = new box2d.b2BodyDef();
     // this.bd.type = box2d.b2BodyType.b2_dynamicBody;
     this.bd.type = box2d.b2BodyType.b2_staticBody;
-    this.bd.position.x = scaleToWorld(this.x);
-    this.bd.position.y = scaleToWorld(this.y);
+    this.bd.position.x = this.initialPos;
+    this.bd.position.y = scaleToWorld(height / 0.85);
     this.fd.shape = new box2d.b2PolygonShape();
     this.fd.shape.SetAsBox(this.w / (scaleFactor * 2), this.h / (scaleFactor * 2));
     this.body = world.CreateBody(this.bd)
     this.body.CreateFixture(this.fd);
+    // this.body.SetPositionXY(this.initialPos, scaleToWorld(height / 0.85));
   }
 
   // Draw the boundary, if it were at an angle we'd have to do something fancier
@@ -42,7 +43,9 @@ class Boundary {
     pop();
   }
   move(x, y){
-    this.body.SetPositionXY(x, y);
+    x = scaleToWorld(x);
+    y = scaleToWorld(y);
+    this.body.SetPositionXY(this.initialPos - x, y);
   }
 
 
