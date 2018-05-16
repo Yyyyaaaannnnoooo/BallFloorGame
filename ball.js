@@ -42,19 +42,35 @@ class Ball {
         this.body.SetLinearVelocity(new box2d.b2Vec2(x, 0));
     }
     jump(){
-        this.body.SetLinearVelocity(new box2d.b2Vec2(0, 100));
+        let x = this.body.GetLinearVelocity().x;
+        console.log(x);
+        this.body.SetLinearVelocity(new box2d.b2Vec2(x, -15));
+    }
+    edge(){
+        let pos = this.position();
+        let w = scaleToWorld(width);
+        let h = scaleToWorld(height)
+        let x = scaleToWorld(pos.x);
+        let y = scaleToWorld(pos.y);
+        if(pos.x < 0)this.body.SetPositionXY(w, y);
+        if(pos.x > width)this.body.SetPositionXY(0, y);
+        if(pos.y < 0)this.body.SetPositionXY(x, h);
+        if(pos.y > height)this.body.SetPositionXY(x, 0);
+    }
+    position(){
+        return scaleToPixels(this.body.GetPosition());
     }
     // Drawing the box
     display() {
       // Get the body's position
-      let pos = scaleToPixels(this.body.GetPosition());
+    //   let pos = scaleToPixels(this.body.GetPosition());
       // Get its angle of rotation
       let a = this.body.GetAngleRadians();
   
       // Draw it!
       rectMode(CENTER);
       push();
-      translate(pos.x, pos.y);
+      translate(this.position().x, this.position().y);
       rotate(a);
       fill(127);
       stroke(200);
