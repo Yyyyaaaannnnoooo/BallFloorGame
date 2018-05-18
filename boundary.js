@@ -11,7 +11,11 @@ class Boundary {
     this.y = y || 0;
     this.w = w || random(30, 400);
     this.h = 20;
-    this.initialPos = scaleToWorld(width + this.w / 2);
+    // movement vars
+    this.initialPos = scaleToWorld(width + this.w);//
+    this.velocity = 0;
+    this.acceleration = 5;
+    // Box2D vars
     this.fd = new box2d.b2FixtureDef();
     this.fd.density = 1.0;
     this.fd.friction = 0.5;
@@ -21,11 +25,13 @@ class Boundary {
     // this.bd.type = box2d.b2BodyType.b2_dynamicBody;
     this.bd.type = box2d.b2BodyType.b2_staticBody;
     this.bd.position.x = this.initialPos;
-    this.bd.position.y = scaleToWorld(height / 0.85);
+    this.bd.position.y = scaleToWorld(FLOOR_HEIGTH());
     this.fd.shape = new box2d.b2PolygonShape();
     this.fd.shape.SetAsBox(this.w / (scaleFactor * 2), this.h / (scaleFactor * 2));
     this.body = world.CreateBody(this.bd)
     this.body.CreateFixture(this.fd);
+    // this.body.SetGravityScale(0);
+    this.body.SetLinearVelocity(new box2d.b2Vec2(-10, 0));
     // this.body.SetPositionXY(this.initialPos, scaleToWorld(height / 0.85));
   }
 
@@ -42,10 +48,13 @@ class Boundary {
     rect(0, 0, this.w, this.h);
     pop();
   }
-  move(x, y){
-    x = scaleToWorld(x);
-    y = scaleToWorld(y);
-    this.body.SetPositionXY(this.initialPos - x, y);
+  update(){
+    // x = scaleToWorld(x);
+    // y = scaleToWorld(y);
+    // this.body.SetLinearVelocity(new box2d.b2Vec2(-10, 0));
+    // console.log(this.body.GetPosition());
+    this.velocity++;
+    this.body.SetPositionXY(this.initialPos - this.velocity, scaleToWorld(FLOOR_HEIGTH()));
   }
 
 
@@ -60,6 +69,7 @@ class Boundary {
     let pos = scaleToPixels(this.body.GetPosition());
     // Is it off the bottom of the screen?
     if (pos.x < 0 - (this.w)) {
+      // console.log(this, pos.x);
       this.killBody();
       return true;
     }

@@ -10,13 +10,16 @@ let world;
 // let boundaries = [];
 let flr;
 let ball;
+let boundaries = [];
 function setup() {
   createCanvas(innerWidth, innerHeight);
 
   // Initialize box2d physics and create the world
   world = createWorld();
-  flr = new Floor();
+  // flr = new Floor();
   ball = new Ball(width / 2, 0);
+  boundaries.push(new Boundary());
+  // boundaries.push(new Boundary());
   // Add a bunch of fixed boundaries
   // bb = new Boundary(4 * width / 4, height - 150, width / 2 - 50, 10)
 
@@ -29,8 +32,21 @@ function draw() {
   let timeStep = 1.0 / 30;
   // 2nd and 3rd arguments are velocity and position iterations
   world.Step(timeStep, 10, 10);
-  // if(frameCount % 60 == 0 && frameCount > 0)flr.addFloor();
-  flr.update();
+  let num = floor(random(30, 50));
+  if (frameCount % num == 0 && frameCount > 0) {
+    boundaries.push(new Boundary());
+    console.log(boundaries.length);
+  }
+  // flr.update();
+  for (let i = boundaries.length - 1; i >= 0; i--) {
+    let b = boundaries[i];
+    boundaries[i].update();
+    boundaries[i].display();
+    if (boundaries[i].done()) {
+      boundaries.splice(i, 1);
+      // boundaries.push(new Boundary());
+    }
+  }
   ball.edge();
   ball.display();
   // Boxes fall from the top every so often
@@ -49,7 +65,7 @@ function draw() {
   stroke(0, 255, 0);
   line(0, FLOOR_HEIGTH() - (4 * ball.r), width, FLOOR_HEIGTH() - (4 * ball.r));
 }
-function FLOOR_HEIGTH(){
+function FLOOR_HEIGTH() {
   return innerHeight * 0.85;
 }
 function mousePressed() {

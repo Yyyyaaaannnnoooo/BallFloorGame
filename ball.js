@@ -39,11 +39,11 @@ class Ball {
         let pos = this.body.GetPosition();
         // pos.x += x;
         // this.body.SetPositionXY(pos.x, pos.y);
-        this.body.SetLinearVelocity(new box2d.b2Vec2(x, 0));
+        let y = this.body.GetLinearVelocity().y;
+        this.body.SetLinearVelocity(new box2d.b2Vec2(x, y));
     }
     jump(){
         let x = this.body.GetLinearVelocity().x;
-        console.log(x);
         this.body.SetLinearVelocity(new box2d.b2Vec2(x, -15));
     }
     edge(){
