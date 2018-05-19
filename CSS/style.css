@@ -7,7 +7,7 @@ body{
     top: 0px;
     left: 0px;
 }
-#swears{
+#swears, #intro{
     color: #fff;
     position: fixed;
     font-weight: bolder;
@@ -16,6 +16,7 @@ body{
     font-size: 10vh;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
+    /* width: 90%; */
     width: min-content;
     width: -moz-min-content;
     width: -webkit-min-content;
@@ -26,4 +27,8 @@ body{
     -webkit-transform: translate(-50%, -50%);
     height: auto;
     z-index: 9999;
+}
+#intro{
+    width: 75%;
+    font-size: 3vh;
 }

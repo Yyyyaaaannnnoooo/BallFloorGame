@@ -3,7 +3,8 @@
 // http://natureofcode.com
 
 const MOTION = 1000;
-const inc = Math.PI / 120;
+const INC = Math.PI / 120;
+const START_VALUE = 100;
 // A reference to our box2d world
 let world;
 let ball;
@@ -11,7 +12,10 @@ let boundaries = [];
 
 let cnv;
 let sinBG = 0;
-let BGcolor = 0;
+let BGcolor = 100;
+
+let start = false;
+let startCount = 0;
 function setup() {
   cnv = createCanvas(innerWidth, innerHeight);
   cnv.parent('p5Sketch');
@@ -27,44 +31,57 @@ function setup() {
 
 function draw() {
   background(BGcolor);
+  if (start) {
+    // We must always step through time!
+    let timeStep = 1.0 / 30;
+    // 2nd and 3rd arguments are velocity and position iterations
+    world.Step(timeStep, 10, 10);
 
-  // We must always step through time!
-  let timeStep = 1.0 / 30;
-  // 2nd and 3rd arguments are velocity and position iterations
-  world.Step(timeStep, 10, 10);
+    //update the moving floors
+    let num = floor(random(30, 50));
+    if (frameCount % num == 0 && frameCount > 0) {
+      boundaries.push(new Boundary());
+    }
+    for (let i = boundaries.length - 1; i >= 0; i--) {
+      let b = boundaries[i];
+      boundaries[i].update();
+      boundaries[i].display();
+      if (boundaries[i].done()) {
+        boundaries.splice(i, 1);
+      }
+    }
 
-  //update the moving floors
-  let num = floor(random(30, 50));
-  if (frameCount % num == 0 && frameCount > 0) {
-    boundaries.push(new Boundary());
+    //update the ball
+    ball.edge();
+    ball.display();
+    let value = window.orientation == 90 ? -(sy * 5) : sx * 5;
+    ball.motion(value);
+
+    /////SWEARS//////
+    counter--;
+    if (counter < 1) {
+      // hide the swears!
+      document.getElementById('swears').style.display = 'none';
+    }
+  } else {
+    let w = map(startCount, 0, START_VALUE, 0, width);
+    fill(0, 0, 255);
+    rect(0, 0, w, height);
   }
-  for (let i = boundaries.length - 1; i >= 0; i--) {
-    let b = boundaries[i];
-    boundaries[i].update();
-    boundaries[i].display();
-    if (boundaries[i].done()) {
-      boundaries.splice(i, 1);
+
+  if (mouseIsPressed) {
+    startCount++;
+    if (!start && startCount > START_VALUE) {
+      document.getElementById('intro').style.display = 'none';
+      start = true;
     }
   }
-
-  //update the ball
-  ball.edge();
-  ball.display();
-  let value = window.orientation == 90 ? -(sy * 5) : sx * 5;
-  ball.motion(value);
-  
-  /////SWEARS//////
-  counter--;
-  if(counter < 1){
-    // hide the swears!
-    document.getElementById('swears').style.display = 'none';
-  }
   // uppdate the background
-  // sinBG += inc;
+  // sinBG += INC;
   BGcolor = map(ball.position().y, 0, FLOOR_HEIGTH(), 100, 0);
   // console.log(ball.position().y);
 }
-function windowResized(){
+function windowResized() {
   resizeCanvas(innerWidth, innerHeight);
 }
 function FLOOR_HEIGTH() {
@@ -83,7 +100,7 @@ function keyPressed() {
  * DEVICE MOTION
  */
 
- /* PREFS */
+/* PREFS */
 const easing = 0.5; // set between 0 - 1
 
 /* VARS */
