@@ -2,20 +2,22 @@
 // Daniel Shiffman
 // http://natureofcode.com
 
-// const FLOOR_HEIGTH = innerHeight * 0.85;
+const MOTION = 200;
 // A reference to our box2d world
 let world;
-
 // A list we'll use to track fixed objects
 // let boundaries = [];
 let flr;
 let ball;
 let boundaries = [];
+let cnv;
 function setup() {
-  createCanvas(innerWidth, innerHeight);
-
+  cnv = createCanvas(innerWidth, innerHeight);
+  cnv.parent('p5Sketch');
   // Initialize box2d physics and create the world
   world = createWorld();
+  // attach the collision listener to the world
+  world.SetContactListener(new CustomListener());
   // flr = new Floor();
   ball = new Ball(width / 2, 0);
   boundaries.push(new Boundary());
@@ -35,7 +37,6 @@ function draw() {
   let num = floor(random(30, 50));
   if (frameCount % num == 0 && frameCount > 0) {
     boundaries.push(new Boundary());
-    console.log(boundaries.length);
   }
   // flr.update();
   for (let i = boundaries.length - 1; i >= 0; i--) {
@@ -49,21 +50,11 @@ function draw() {
   }
   ball.edge();
   ball.display();
-  // Boxes fall from the top every so often
-  // if (random(1) < 0.2) {
-  //   let b = new Box(width / 2, 30);
-  //   boxes.push(b);
-  // }
-  // bb.display();
-  // bb.move(mouseX, height / 20);
-  // // Display all the boundaries
-  // for (let i = 0; i < boundaries.length; i++) {
-  //   boundaries[i].display();
-  // }
-  stroke(255);
-  line(0, FLOOR_HEIGTH(), width, FLOOR_HEIGTH());
-  stroke(0, 255, 0);
-  line(0, FLOOR_HEIGTH() - (4 * ball.r), width, FLOOR_HEIGTH() - (4 * ball.r));
+  let value = window.orientation == 90 ? -(sy * 5) : sx * 5;
+  ball.motion(value); 
+}
+function windowResized(){
+  resizeCanvas(innerWidth, innerHeight);
 }
 function FLOOR_HEIGTH() {
   return innerHeight * 0.85;
@@ -72,7 +63,45 @@ function mousePressed() {
   ball.jump();
 }
 function keyPressed() {
-  if (keyCode === LEFT_ARROW) ball.move(-10);
-  else if (keyCode === RIGHT_ARROW) ball.move(10);
+  if (keyCode === LEFT_ARROW) ball.motion(-MOTION);
+  else if (keyCode === RIGHT_ARROW) ball.motion(MOTION);
   else if (keyCode === UP_ARROW) ball.jump();
+}
+
+/**
+ * DEVICE MOTION
+ */
+
+ /* PREFS */
+const easing = 0.5; // set between 0 - 1
+
+/* VARS */
+let rx, ry, rz, sx, sy, sz;
+rx = ry = rz = sx = sy = sz = 0;
+
+/* ONDEVICEMOTION */
+// https://developer.mozilla.org/en-US/docs/Web/Events/devicemotion
+window.ondevicemotion = event => {
+  /* RAW VALUES */
+  rx = event.accelerationIncludingGravity.x;
+  ry = event.accelerationIncludingGravity.y;
+  rz = event.accelerationIncludingGravity.z;
+
+  /* SMOOTHED VALUES */
+  sx = smoothVal(rx, sx);
+  sy = smoothVal(ry, sy);
+  sz = smoothVal(rz, sz);
+};
+
+/* VALUE MAPPING */
+function mapVal(value, istart, istop, ostart, ostop) {
+  return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+}
+
+/* VALUE SMOOTHING */
+function smoothVal(inputVal, outputVal) {
+  let tarVal = inputVal;
+  let calcVal = tarVal - outputVal;
+  outputVal += calcVal * easing;
+  return outputVal;
 }

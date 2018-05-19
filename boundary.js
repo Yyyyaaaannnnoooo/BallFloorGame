@@ -9,8 +9,9 @@ class Boundary {
   constructor(x, y, w) {
     this.x = x || 0;
     this.y = y || 0;
-    this.w = w || random(30, 400);
+    this.w = w || random(30, 200);
     this.h = 20;
+    this.col = color(128);
     // movement vars
     this.initialPos = scaleToWorld(width + this.w);//
     this.velocity = 0;
@@ -30,9 +31,8 @@ class Boundary {
     this.fd.shape.SetAsBox(this.w / (scaleFactor * 2), this.h / (scaleFactor * 2));
     this.body = world.CreateBody(this.bd)
     this.body.CreateFixture(this.fd);
-    // this.body.SetGravityScale(0);
     this.body.SetLinearVelocity(new box2d.b2Vec2(-10, 0));
-    // this.body.SetPositionXY(this.initialPos, scaleToWorld(height / 0.85));
+    this.body.SetUserData(this);
   }
 
   // Draw the boundary, if it were at an angle we'd have to do something fancier
@@ -42,11 +42,14 @@ class Boundary {
     push();
     translate(pos.x, pos.y);
     // rotate(a);
-    fill(127);
+    fill(this.col);
     stroke(200);
     strokeWeight(2);
     rect(0, 0, this.w, this.h);
     pop();
+  }
+  change(){
+    this.col = color(0, 255, 0);
   }
   update(){
     // x = scaleToWorld(x);

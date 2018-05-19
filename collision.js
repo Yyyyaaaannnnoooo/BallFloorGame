@@ -6,30 +6,31 @@
 
 class CustomListener {
 
-  // Collision event functions!
-  BeginContact(contact) {
-    // Get both fixtures
-    let f1 = contact.GetFixtureA();
-    let f2 = contact.GetFixtureB();
-    // Get both bodies
-    let b1 = f1.GetBody();
-    let b2 = f2.GetBody();
+    // Collision event functions!
+    BeginContact(contact) {
+        // Get both fixtures
+        let f1 = contact.GetFixtureA();
+        let f2 = contact.GetFixtureB();
+        // Get both bodies
+        let b1 = f1.GetBody();
+        let b2 = f2.GetBody();
 
-    // Get our objects that reference these bodies
-    let o1 = b1.GetUserData();
-    let o2 = b2.GetUserData();
-
-    if (o1 instanceof Particle && o2 instanceof Particle) {
-      o1.change();
-      o2.change();
+        // Get our objects that reference these bodies
+        let o1 = b1.GetUserData();
+        let o2 = b2.GetUserData();
+        // o1.change();
+        o2.change();
+        // if (o1 instanceof Ball || o2 instanceof Boundary) {
+        //     o1.change();
+        //     o2.change();
+        // }
+        // console.log(contact)
     }
-    console.log(contact)
-  }
 
-  // Objects stop touching each other
-  EndContact(contact) {};
+    // Objects stop touching each other
+    EndContact(contact) { };
 
-  PreSolve(contact, manifold) {};
+    PreSolve(contact, manifold) { };
 
-  PostSolve(contact, manifold) {};
+    PostSolve(contact, manifold) { };
 }
