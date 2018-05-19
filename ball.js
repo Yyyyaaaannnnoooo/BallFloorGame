@@ -8,7 +8,7 @@
 class Ball {
     constructor(x, y) {
         this.r = 25;
-        this.col = color(51);
+        this.col = color(0);
         this.ableToJump = true;
         // Define a body
         let bd = new box2d.b2BodyDef();
@@ -34,9 +34,14 @@ class Ball {
         // Some additional stuff
         this.body.SetAngularVelocity(random(-5, 5));
         this.body.SetUserData(this);
-    }
+    }/**
+     * this action i fired by the collision detection
+     */
     change() {
         this.ableToJump = true;
+    }
+    setColor(col){
+        this.col = col;
     }
     motion(x) {
         // x = scaleToWorld(x);
@@ -62,6 +67,7 @@ class Ball {
         if (pos.y < 0) this.body.SetPositionXY(x, h);
         if (pos.y > height) {
             this.body.SetPositionXY(x, 0);
+            // when the ball falls off the screen the game swears!
             swearText();
         }
     }
@@ -80,11 +86,12 @@ class Ball {
         push();
         translate(this.position().x, this.position().y);
         rotate(a);
-        fill(this.col);
-        stroke(200);
-        strokeWeight(2);
+        fill(this.col);       
+        noStroke();
         ellipse(0, 0, this.r * 2, this.r * 2);
         // Let's add a line so we can see the rotation
+        stroke(200);
+        strokeWeight(2);
         line(0, 0, this.r, 0);
         pop();
     }

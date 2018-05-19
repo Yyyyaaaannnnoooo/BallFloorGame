@@ -3,14 +3,15 @@
 // http://natureofcode.com
 
 const MOTION = 1000;
+const inc = Math.PI / 120;
 // A reference to our box2d world
 let world;
-// A list we'll use to track fixed objects
-// let boundaries = [];
-let flr;
 let ball;
 let boundaries = [];
+
 let cnv;
+let sinBG = 0;
+let BGcolor = 0;
 function setup() {
   cnv = createCanvas(innerWidth, innerHeight);
   cnv.parent('p5Sketch');
@@ -18,36 +19,35 @@ function setup() {
   world = createWorld();
   // attach the collision listener to the world
   world.SetContactListener(new CustomListener());
-  // flr = new Floor();
+
   ball = new Ball(width / 2, 0);
   boundaries.push(new Boundary());
-  // boundaries.push(new Boundary());
-  // Add a bunch of fixed boundaries
-  // bb = new Boundary(4 * width / 4, height - 150, width / 2 - 50, 10)
 
 }
 
 function draw() {
-  background(51);
+  background(BGcolor);
 
   // We must always step through time!
   let timeStep = 1.0 / 30;
   // 2nd and 3rd arguments are velocity and position iterations
   world.Step(timeStep, 10, 10);
+
+  //update the moving floors
   let num = floor(random(30, 50));
   if (frameCount % num == 0 && frameCount > 0) {
     boundaries.push(new Boundary());
   }
-  // flr.update();
   for (let i = boundaries.length - 1; i >= 0; i--) {
     let b = boundaries[i];
     boundaries[i].update();
     boundaries[i].display();
     if (boundaries[i].done()) {
       boundaries.splice(i, 1);
-      // boundaries.push(new Boundary());
     }
   }
+
+  //update the ball
   ball.edge();
   ball.display();
   let value = window.orientation == 90 ? -(sy * 5) : sx * 5;
@@ -56,8 +56,13 @@ function draw() {
   /////SWEARS//////
   counter--;
   if(counter < 1){
+    // hide the swears!
     document.getElementById('swears').style.display = 'none';
   }
+  // uppdate the background
+  // sinBG += inc;
+  BGcolor = map(ball.position().y, 0, FLOOR_HEIGTH(), 100, 0);
+  // console.log(ball.position().y);
 }
 function windowResized(){
   resizeCanvas(innerWidth, innerHeight);

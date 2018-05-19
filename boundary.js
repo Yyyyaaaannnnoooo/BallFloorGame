@@ -11,7 +11,7 @@ class Boundary {
     this.y = y || 0;
     this.w = w || random(30, 200);
     this.h = 20;
-    this.col = color(128);
+    this.col = color(0);
     // movement vars
     this.initialPos = scaleToWorld(width + this.w);//
     this.velocity = 0;
@@ -41,21 +41,18 @@ class Boundary {
     rectMode(CENTER);
     push();
     translate(pos.x, pos.y);
-    // rotate(a);
     fill(this.col);
-    stroke(200);
+    noStroke();
     strokeWeight(2);
     rect(0, 0, this.w, this.h);
+    stroke(255)
+    line(-this.w / 2.5, 0, this.w / 2.5, 0);
     pop();
   }
   change(){
     this.col = color(0, 255, 0);
   }
   update(){
-    // x = scaleToWorld(x);
-    // y = scaleToWorld(y);
-    // this.body.SetLinearVelocity(new box2d.b2Vec2(-10, 0));
-    // console.log(this.body.GetPosition());
     this.velocity++;
     this.body.SetPositionXY(this.initialPos - this.velocity, scaleToWorld(FLOOR_HEIGTH()));
   }
