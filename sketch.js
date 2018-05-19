@@ -2,7 +2,7 @@
 // Daniel Shiffman
 // http://natureofcode.com
 
-const MOTION = 200;
+const MOTION = 1000;
 // A reference to our box2d world
 let world;
 // A list we'll use to track fixed objects
@@ -51,7 +51,13 @@ function draw() {
   ball.edge();
   ball.display();
   let value = window.orientation == 90 ? -(sy * 5) : sx * 5;
-  ball.motion(value); 
+  ball.motion(value);
+  
+  /////SWEARS//////
+  counter--;
+  if(counter < 1){
+    document.getElementById('swears').style.display = 'none';
+  }
 }
 function windowResized(){
   resizeCanvas(innerWidth, innerHeight);

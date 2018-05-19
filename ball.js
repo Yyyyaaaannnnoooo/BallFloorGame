@@ -47,7 +47,7 @@ class Ball {
     jump() {
         if (this.ableToJump) {
             let x = this.body.GetLinearVelocity().x;
-            this.body.SetLinearVelocity(new box2d.b2Vec2(x, -30));
+            this.body.SetLinearVelocity(new box2d.b2Vec2(x, -50));
             this.ableToJump = false;
         }
     }
