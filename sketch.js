@@ -54,8 +54,10 @@ function draw() {
     //update the ball
     ball.edge();
     ball.display();
-    let value = window.orientation == 90 ? -(sy * 5) : sx * 5;
-    ball.motion(value);
+    const x = map(mouseX, 0, width, -20, 20)
+    sx = smoothVal(x, sx)
+    // let value = window.orientation == 90 ? -(sy * 5) : sx * 5;
+    ball.motion(sx);
 
     /////SWEARS//////
     counter--;
@@ -109,22 +111,22 @@ rx = ry = rz = sx = sy = sz = 0;
 
 /* ONDEVICEMOTION */
 // https://developer.mozilla.org/en-US/docs/Web/Events/devicemotion
-window.ondevicemotion = event => {
-  /* RAW VALUES */
-  rx = event.accelerationIncludingGravity.x;
-  ry = event.accelerationIncludingGravity.y;
-  rz = event.accelerationIncludingGravity.z;
+// window.ondevicemotion = event => {
+//   /* RAW VALUES */
+//   rx = event.accelerationIncludingGravity.x;
+//   ry = event.accelerationIncludingGravity.y;
+//   rz = event.accelerationIncludingGravity.z;
 
-  /* SMOOTHED VALUES */
-  sx = smoothVal(rx, sx);
-  sy = smoothVal(ry, sy);
-  sz = smoothVal(rz, sz);
-};
+//   /* SMOOTHED VALUES */
+//   sx = smoothVal(rx, sx);
+//   sy = smoothVal(ry, sy);
+//   sz = smoothVal(rz, sz);
+// };
 
-/* VALUE MAPPING */
-function mapVal(value, istart, istop, ostart, ostop) {
-  return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
-}
+// /* VALUE MAPPING */
+// function mapVal(value, istart, istop, ostart, ostop) {
+//   return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+// }
 
 /* VALUE SMOOTHING */
 function smoothVal(inputVal, outputVal) {
