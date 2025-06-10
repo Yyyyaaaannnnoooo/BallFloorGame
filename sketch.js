@@ -54,7 +54,7 @@ function draw() {
     //update the ball
     ball.edge();
     ball.display();
-    const x = map(mouseX, 0, width, -20, 20)
+    const x = map(mouseX, 0, width, -50, 50)
     sx = smoothVal(x, sx)
     // let value = window.orientation == 90 ? -(sy * 5) : sx * 5;
     ball.motion(sx);
